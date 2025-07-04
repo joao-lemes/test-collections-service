@@ -1,0 +1,25 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": [
+            "Modules/*/app/Application",
+            "Modules/*/app/Domain"
+        ]
+    },
+    "timeout": 30,
+    "logs": {
+        "text": "tests/reports/infection/infection.log",
+        "html": "tests/reports/infection/infection.html",
+        "summary": "tests/reports/infection/summary.log",
+        "json": "tests/reports/infection/infection-log.json",
+        "perMutator": "tests/reports/infection/per-mutator.md"
+    },
+    "phpUnit": {
+        "customPath": "vendor/bin/phpunit"
+    },
+    "mutators": {
+        "@default": true
+    },
+    "bootstrap": "./vendor/autoload.php",
+    "initialTestsPhpOptions": "-d grpc.enable_fork_support=1"
+}
