@@ -43,3 +43,18 @@ docker-compose exec app php artisan migrate
 ```
 sudo chmod 777 -R storage/
 ```
+
+## Comandos extras
+
+### Executar testes
+
+```
+docker-compose exec app composer test
+docker-compose exec app composer test:mutation
+```
+
+Testes:<br>
+![test](docs/test.png)
+
+Teste mutation:<br>
+![testMutation](docs/testMutation.png)
