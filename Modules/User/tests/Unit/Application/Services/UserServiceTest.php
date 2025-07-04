@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\User\Tests\Unit\Application\Services;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,12 +13,13 @@ use Modules\User\Http\Resources\OutputUserWithCollectionValue;
 use Tests\TestCase;
 use Mockery;
 use Faker\Factory;
+use Faker\Generator;
 use Modules\User\Domain\Models\User;
 
 /** @internal */
 class UserServiceTest extends TestCase
 {
-    protected $faker;
+    protected Generator $faker;
 
     protected function setUp(): void
     {

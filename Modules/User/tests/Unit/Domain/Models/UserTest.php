@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\User\Tests\Unit\Domain\Models;
 
 use Carbon\Carbon;
 use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\User\Domain\Models\User;
 use Modules\BillingCollection\Domain\Models\BillingCollection;
@@ -11,7 +14,7 @@ use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-    protected $faker;
+    protected Generator $faker;
     
     protected function setUp(): void
     {
