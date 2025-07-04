@@ -1,0 +1,284 @@
+openapi: 3.0.3
+info:
+  title: Billing Collection Service
+  version: 1.0.0
+  description: API para gerenciamento de cobranças.
+
+paths:
+  /user:
+    get:
+      summary: Listar todos os usuários
+      tags: [Usuários]
+      responses:
+        '200':
+          description: Lista de usuários
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+              example:
+                data:
+                  - id: 1
+                    name: João Gabriel Lopes Lemes
+                    email: joao@yopmail.com
+                    inscription: "99999999999"
+                    created_at: "2025-07-04T16:13:09.000000Z"
+                    updated_at: "2025-07-04T16:13:09.000000Z"
+                  - id: 2
+                    name: João 2 Gabriel Lopes Lemes
+                    email: joao2@yopmail.com
+                    inscription: "29999999999"
+                    created_at: "2025-07-04T16:13:51.000000Z"
+                    updated_at: "2025-07-04T16:13:51.000000Z"
+
+    post:
+      summary: Criar usuário
+      tags: [Usuários]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+            example:
+              name: João Gabriel Lopes Lemes
+              email: joao@yopmail.com
+              inscription: "99999999999"
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+              example:
+                data:
+                  id: 1
+                  name: João Gabriel Lopes Lemes
+                  email: joao@yopmail.com
+                  inscription: "99999999999"
+                  created_at: "2025-07-04T16:13:09.000000Z"
+                  updated_at: "2025-07-04T16:13:09.000000Z"
+        '422':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: "O campo nome é obrigatório. (e mais 2 erros)"
+                errors:
+                  - "O campo nome é obrigatório."
+                  - "O campo email é obrigatório."
+                  - "O campo documento é obrigatório."
+
+  /user/{id}/collection-value:
+    get:
+      summary: Retorna os dados do usuário com o valor total de cobranças no mês
+      tags: [Usuários]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID do usuário
+        - name: date
+          in: query
+          required: true
+          description: Mês e ano para cálculo da cobrança
+          schema:
+            type: string
+            format: yyyy-MM
+      responses:
+        '200':
+          description: Dados do usuário com valor de cobrança
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWithCollectionValueResponse'
+              example:
+                data:
+                  id: 1
+                  name: João Gabriel Lopes Lemes
+                  email: joao@yopmail.com
+                  inscription: "99999999999"
+                  created_at: "2025-07-04T16:13:09.000000Z"
+                  updated_at: "2025-07-04T16:13:09.000000Z"
+                  collection_value: 0
+        '422':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: "O campo data é obrigatório."
+                errors:
+                  - "O campo data é obrigatório."
+
+  /collection:
+    post:
+      summary: Cria uma nova cobrança
+      tags: [Cobranças]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - customer_id
+                - amount
+                - due_date
+                - description
+              properties:
+                customer_id:
+                  type: integer
+                  example: 1
+                amount:
+                  type: number
+                  format: float
+                  example: 20.5
+                due_date:
+                  type: string
+                  format: date
+                  example: "2025-12-01"
+                description:
+                  type: string
+                  example: "test 1"
+      responses:
+        '201':
+          description: Cobrança criada com sucesso
+          content:
+            application/json:
+              example:
+                data:
+                  id: 7
+                  customer_id: 1
+                  amount: 20.5
+                  due_date: "2025-12-01"
+                  description: "test 1"
+                  created_at: "2025-07-04T17:14:36.000000Z"
+                  updated_at: "2025-07-04T17:14:36.000000Z"
+        '422':
+          description: Erro de validação
+          content:
+            application/json:
+              example:
+                message: "O campo id do cliente é obrigatório. (e mais 3 erros)"
+                errors:
+                  - "O campo id do cliente é obrigatório."
+                  - "O campo quantidade é obrigatório."
+                  - "O campo data de vencimento é obrigatório."
+                  - "O campo descrição é obrigatório."
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        inscription:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateUserRequest:
+      type: object
+      required: [name, email, inscription]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        inscription:
+          type: string
+
+    Collection:
+      type: object
+      properties:
+        id:
+          type: integer
+        customer_id:
+          type: integer
+        amount:
+          type: number
+          format: float
+        due_date:
+          type: string
+          format: date
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateCollectionRequest:
+      type: object
+      required: [customer_id, amount, due_date, description]
+      properties:
+        customer_id:
+          type: integer
+        amount:
+          type: number
+          format: float
+        due_date:
+          type: string
+          format: date
+        description:
+          type: string
+
+    UserWithCollectionValueResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/User'
+            - type: object
+              properties:
+                collection_value:
+                  type: number
+                  format: float
+
+    UserListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+
+    UserResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/User'
+
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "The name field is required. exception.and_more_errors"
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+            - "The name field is required."
+            - "The email field is required."
+            - "The inscription field is required."
