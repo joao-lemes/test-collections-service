@@ -1,0 +1,11 @@
+{
+    "name": "BillingCollection",
+    "alias": "billingcollection",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\BillingCollection\\Providers\\BillingCollectionServiceProvider"
+    ],
+    "files": []
+}
